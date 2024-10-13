@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link rel="stylesheet" href="main.css" type="text/css">
+</head>
+<body>
+    <h2>Student Registration Form</h2>
+    <form id="studentForm">
+        <label for="id">Student ID (for Update/Delete)</label>
+        <br>
+        <input type="number" id="id" name="id" placeholder="  Only for Update/Delete" />
+        <br><br>
+
+        <label for="name">Full Name</label>
+        <br>
+        <input type="text" id="name" name="name" placeholder="  Your Full Name" required>
+        <br><br>
+
+        <label for="email">Email</label>
+        <br>
+        <input type="email" id="email" name="email" placeholder="  Fname_Lname_branch@moderncoe.edu.in" required>
+        <br><br>
+
+        <label for="age">Age</label>
+        <br>
+        <input type="number" id="age" name="age" placeholder="  Your Age" required>
+        <br><br>
+        
+        <section class="button-tray">
+            <button type="button" onclick="addStudent()" id="add">Add</button>
+            <button type="button" onclick="updateStudent()" id="update">Update</button>
+            <button type="button" onclick="deleteStudent()" id="delete">Delete</button>
+        </section>
+    </form>
+
+    <p id="message"></p>
+
+    <script>
+        async function addStudent() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const age = document.getElementById('age').value;
+
+            const response = await fetch('http://localhost:3000/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, age }),
+            });
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+            refreshInput();
+        }
+
+        async function updateStudent() {
+            const id = document.getElementById('id').value;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const age = document.getElementById('age').value;
+
+            const response = await fetch(`http://localhost:3000/update/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, age }),
+            });
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+            refreshInput();
+        }
+
+        async function deleteStudent() {
+            const id = document.getElementById('id').value;
+
+            const response = await fetch(`http://localhost:3000/delete/${id}`, {
+                method: 'DELETE',
+            });
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+            refreshInput();
+        }
+
+        function refreshInput(){
+            document.getElementById('name').value="";
+            document.getElementById('email').value="";
+            document.getElementById('age').value="";
+        }
+    </script>
+</body>
+</html>
